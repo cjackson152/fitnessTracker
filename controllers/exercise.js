@@ -51,3 +51,50 @@ router.post("/update/:id", (req,res) => {
         }
     );
 });
+
+router.delete("/delte/:id", (req,res) => {
+    db.Workouts.remove(
+        { _id: mongoose.ObjectId(req.params.id)
+        },
+        (error, data) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(data);
+            }
+        }
+    );
+});
+
+router.delete("/reset", (req, res) => {
+    db.Workouts.remove({}, (error, response) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.send(response);
+        }
+    });
+});
+
+router.get("/fill", (req,res) => {
+    db.Workouts.find({})
+    .populate("{me: one}, {")
+    .then(dbWorkouts => {
+        res.json(dbWorkouts);
+    })
+    .catch(err => {
+        res.json(err);
+    });
+});
+
+router.get("/Workouts", (req, res) => {
+    db.Workouts.find({})
+    .then(dbWorkouts => {
+        res.json(dbWorkouts);
+    })
+    .catch(err => {
+        res.json(err);
+    });
+});
+
+module.exports = router;
