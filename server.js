@@ -33,7 +33,7 @@ app.get("/", (req,res) =>{
 
 })
 
-app.use(require("./controllers/exercise"));
+app.use(require("./controllers/exercises"));
 app.use(require("./controllers/workouts"));
 app.listen(PORT, () => {
     console.log(`connection to port ${PORT}!`);

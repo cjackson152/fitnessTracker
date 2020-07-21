@@ -1,4 +1,3 @@
-const { response } = require("express");
 
 const actBtn = document.getElementById("act-button");
 const note = document.getElementById("new-note");
@@ -75,7 +74,7 @@ results.addEventListener("click", function(e) {
     if(e.target.matches(".delete")) {
         element = e.target;
         data_id = element.getAttribute("data-id");
-        fetch("/exercises/" + data_id, {
+        fetch("/exercise/" + data_id, {
             method: "delete"
         })
         .then(function(response) {
@@ -98,7 +97,7 @@ results.addEventListener("click", function(e) {
         data_id = element.getAttribute("data-id");
         status.innerText = "editing"
 
-        fetch("/exercises/" + data_id, { method: "get" })
+        fetch("/exercise/" + data_id, { method: "get" })
         .then(function(response) {
             return response.json();
         })
