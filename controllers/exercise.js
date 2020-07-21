@@ -1,100 +1,104 @@
 const router = require("express").Router()
-const db = reqwuire("../models");
-const mongoose = require("mongoose");
+const db = require("../models");
+router.post("/submit", ({body}, res) => {
+    console.log(body);
+    db.Exercises.create(body)
+        .then((newExercise) => {
+            console.log(newExercise);
+            return db.Workouts.findOneAndUpdate({}, { exercises: newExercise._id}, { new: true})
 
-router.get("/all", (req, res) => {
-    db.Workouts.find({}, (error, data) => {
-        if( error) {
-            res.send(error);
+        })
+        .then(dbWorkouts => {
+            res.json(newExercise);
 
-        } else {
-            res.json(data);
-        }
-    });
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
-router.get("/find:id", (req,res) => {
-    db.Exercises.findOne(
-        { _id: mongoose.ObjectId(req.params.id)
-        },
-        (error, data) => {
-            if(error) {
-                console.log(error);
-                res.send(error);
-            } else {
-                console.log(data);
-                res.send(data);
-            }
-        }
-    )
-});
-
-router.post("/update/:id", (req,res) => {
-    db.Workouts.update(
-        { _id: mongoose.ObjectId(req.params.id)
-
-        },
-        {
-            $set: {
-                title: req.body.title,
-                note: req.body.note,
-                modified: Date.now()
-            }
-        },
-        (error, data) => {
-            if (error) {
-                res.send(error);
-
-            } else {
-                res.send(data);
-            }
-        }
-    );
-});
-
-router.delete("/delte/:id", (req,res) => {
-    db.Workouts.remove(
-        { _id: mongoose.ObjectId(req.params.id)
-        },
-        (error, data) => {
-            if (error) {
-                res.send(error);
-            } else {
-                res.send(data);
-            }
-        }
-    );
-});
-
-router.delete("/reset", (req, res) => {
-    db.Workouts.remove({}, (error, response) => {
-        if (error) {
-            res.send(error);
-        } else {
-            res.send(response);
-        }
-    });
-});
-
-router.get("/fill", (req,res) => {
-    db.Workouts.find({})
-    .populate("{me: one}, {")
-    .then(dbWorkouts => {
-        res.json(dbWorkouts);
+router.get("/exercises", (req,res) => {
+    console.log("message from exercise:");
+    db.Exercises.find({}).sort({_id: "desc"})
+    .then(dbExercises => {
+        res.json(dbExercises);
     })
     .catch(err => {
         res.json(err);
     });
 });
 
-router.get("/Workouts", (req, res) => {
-    db.Workouts.find({})
-    .then(dbWorkouts => {
-        res.json(dbWorkouts);
-    })
-    .catch(err => {
-        res.json(err);
+router.get("/exercises/:id", (req, res) => {
+    db.Exercises.findById(req.params.id)
+    .then(result => {
+        if(!result) {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        }
+        res.send(result);
+    }).catch(err => {
+        if(err.kind === "ObjectId") {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        }
+
+    return res.status(500).send({
+        message: "No Exercise" + req.params.id
+    });
+
+});
+
+router.put("/exercises/:id", (req, res) => {
+    if(!req.body.name) {
+        return res.status(400).send({
+            message: "must have name"
+        });
+    }
+    db.Exercises.findById(req.params.id, {
+        name: req.body.name || "Exercise",
+        description: req.body.description,
+        difficulty: req.body.difficulty
+    }, {new: true})
+    .then(results => {
+        if(!results) {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        }
+        console.log("LocalHost: " + results);
+        res.send(results);
+    }).catch(err => {
+        if(err.kind === "ObjectId") {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        }
+        return res.status(500).send({
+            message: "No Exercise" + req.params.id
+        });
     });
 });
 
+router.delete("/exercises/:id", (req, res) => {
+    let exerciseId = req.params.id;
+    db.Exercise.findByIdRemove(req.params.id)
+    .then(results => {
+        if(!results) {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        }
+        res.send({message: "Deleted"});
+
+    }).catch(err => {
+        if(err.kind === "ObjectId" || err.name === "Not Found!") {
+            return res.status(404).send({
+                message: "No Exercise" + req.params.id
+            });
+        };
+    });
+});
+});
 module.exports = router;

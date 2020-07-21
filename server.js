@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-const path = require("path:");
+const path = require("path");
 const PORT = process.env.PORT || 3001;
 const db = require("./models");
 const app = express();
@@ -33,8 +33,8 @@ app.get("/", (req,res) =>{
 
 })
 
-app.use(require("./controllers/exercises"));
-app.use(require("./controllers/workout"));
+app.use(require("./controllers/exercise"));
+app.use(require("./controllers/workouts"));
 app.listen(PORT, () => {
     console.log(`connection to port ${PORT}!`);
 });

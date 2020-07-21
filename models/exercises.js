@@ -6,7 +6,7 @@ const ExerciseSchema = new Schema ({
         trim: true,
         required: "Please Name Exercise"
     },
-    intensity: {
+    difficulty: {
         type: String,
         trim: true,
         default: "moderate",
