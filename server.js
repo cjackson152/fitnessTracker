@@ -1,13 +1,12 @@
 const express = require("express");
 const logger = require("morgan");
-const mongoose = require("mongoose");
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 const db = require("./models");
 const app = express();
 require("dotenv").config();
 
-let mongoose = requier("mongoose");
+const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/cjackson152-fitnesstracker");
 
 app.use(logger("dev"));
