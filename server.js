@@ -42,4 +42,3 @@ app.listen(PORT, () => {
     console.log(`connection to port ${PORT}!`);
 });
 
-module.exports = server
