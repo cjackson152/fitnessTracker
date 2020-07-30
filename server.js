@@ -7,7 +7,7 @@ const app = express();
 require("dotenv").config();
 
 const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/cjackson152-fitnesstracker");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://cjackson152:hereyougo1@ds031978.mlab.com:31978/heroku_h9bxf13m");
 
 app.use(logger("dev"));
 app.use(express.static("public"));
