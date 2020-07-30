@@ -2,10 +2,10 @@ const router = require("express").Router()
 const db = require("../models");
 router.post("/submit", ({body}, res) => {
     console.log(body);
-    db.Exercises.create(body)
+    db.Exercise.create(body)
         .then((newExercise) => {
             console.log(newExercise);
-            return db.Workouts.findOneAndUpdate({}, { exercises: newExercise._id}, { new: true})
+            return db.Workouts.findOneAndUpdate({}, { exercise: newExercise._id}, { new: true})
 
         })
         .then(dbWorkouts => {
@@ -19,9 +19,9 @@ router.post("/submit", ({body}, res) => {
 
 router.get("/exercises", (req,res) => {
     console.log("message from exercise:");
-    db.Exercises.find({}).sort({_id: "desc"})
-    .then(dbExercises => {
-        res.json(dbExercises);
+    db.Exercise.find({}).sort({_id: "desc"})
+    .then(dbExercise => {
+        res.json(dbExercise);
     })
     .catch(err => {
         res.json(err);
@@ -29,7 +29,7 @@ router.get("/exercises", (req,res) => {
 });
 
 router.get("/exercises/:id", (req, res) => {
-    db.Exercises.findById(req.params.id)
+    db.Exercise.findById(req.params.id)
     .then(result => {
         if(!result) {
             return res.status(404).send({
@@ -56,7 +56,7 @@ router.put("/exercises/:id", (req, res) => {
             message: "must have name"
         });
     }
-    db.Exercises.findById(req.params.id, {
+    db.Exercise.findById(req.params.id, {
         name: req.body.name || "Exercise",
         description: req.body.description,
         difficulty: req.body.difficulty
